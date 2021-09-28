@@ -22,7 +22,7 @@ loop {
     writeln@Io(n + 10)
 }
 
-s: string = ""
+s: string <- ""
 loop 100{
     s <- ""
 
@@ -58,6 +58,10 @@ loop 100{
 
 
 -*- 構文 -*-
+
+- コメント -
+;comment
+
 - 繰り返し -
 loop {
     ~
@@ -136,7 +140,7 @@ func name(arg1: type, arg2: type, ...)(ret1: type, ret2: type, ...){
 
 - 関数実行 -
 f(arg1, arg2, ...)
-ret1, ret2, ... = f(arg1, arg2, ...)
+ret1, ret2, ... <- f(arg1, arg2, ...)
 
 定義時の返り値の数と実行時に受け取る数が違う場合、受け取れなかった分は無視される。
 受け取る数が多かった場合には例外。
