@@ -174,15 +174,11 @@ var: string
 
 list
 var: list[integer]
-
-queue
-var: queue[integer]
-
-stack
-var: stack[integer]
+var <- [1, 2, 3]
 
 map?
 var: map[integer: string]
+var <- {1: 2, 2: 3}
 
 bool
 var: bool
