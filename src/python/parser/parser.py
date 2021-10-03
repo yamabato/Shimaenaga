@@ -39,12 +39,12 @@ class Parser:
         if self.cur_token.value in COMP_OPER:
             oper = self.cur_token.value
         else:
-            return left #!!!
+            return left
         
         self.next()
         right = self.parse_expression()
 
-        return "(" + left + oper + right + ")"#!!!
+        return EXPR(left, oper, right)
 
     def parse_expr(self):
         e = self.parse_term()
@@ -54,7 +54,7 @@ class Parser:
                 oper = self.cur_token.value
                 self.next()
                 right = self.parse_term()
-                e = "(" + e + oper + right + ")" #!!!
+                e = EXPR(e, oper, right)
                 continue
             else:
                 return e
@@ -68,7 +68,7 @@ class Parser:
                 oper = self.cur_token.value
                 self.next()
                 right = self.parse_factor()
-                e = "(" + e + oper + right + ")" #!!!
+                e = EXPR(e, oper, right)
                 continue
             else:
                 return e#!!!
@@ -81,10 +81,24 @@ class Parser:
                 #self.next()
                 pass
             return e
+        
+        v = self.parse_value()
+        return v
 
-        return self.cur_token.value
+    def parse_value(self):
+        if self.cur_token.type == TYPE_INTEGER:
+            return INTEGER(int(self.cur_token.value))
+
+        if self.cur_token.type == TYPE_FLOAT:
+            return FLOAT(float(self.cur_token.value))
+
+        if self.cur_token.type == TYPE_STRING:
+            return STRING(self.cur_token.value)
+
+        if self.cur_token.type == TYPE_BOOL:
+            return BOOL(self.cur_token.value)
     
-    def parse_var_def1(self):
+    def parse_var_def(self):
         name = self.cur_token.value
 
         self.next()
@@ -110,11 +124,50 @@ class Parser:
 
         node.expr = self.parse_expression()
 
-        print(node.expr)
         return node
+
+    def parse_assignment(self):
+        name = self.cur_token.value
+
+        self.next()
+        self.next()
+
+        expr = self.parse_expression()
+
+        node = ASSIGNMENT(name, expr)
+
+        return node
+
+    def parse_count_loop(self):
+        self.next()
+
+        n = self.parse_expression()
+
+        if self.cur_token.value != "{":
+            return None
+
+        self.next()
+
+
+        st = self.parse()
+
+        return COUNT_LOOP(n, st)
+
+    def parse_infinit_loop(self):
+        self.next()
+
+        st = self.parse()
+
+        return INFINIT_LOOP(st)
+
+    def parse_block(self):
+        block_tokens = []
         
     def parse(self):
         tree = COMPOUND_STATEMENT()
+
+        left_brace = 0
+        right_brace = 0
 
         while True:
             st = None
@@ -123,17 +176,45 @@ class Parser:
 
             if self.cur_token.value == EOP: break
             if self.cur_token is None: break
-            
-            #var: type [<- value];var_def1 
-            if self.cur_token.type == TYPE_IDENTIFIER and self.peek_token.value == ":":
-                st = self.parse_var_def1()
+            if self.cur_token.type == "" and self.cur_token.value is None:
+                self.next()
+                continue
 
-                if st is not None:
-                    tree.add_statement(st)
+            if self.cur_token.value == "{":
+                right_brace += 1
+                if left_brace == right_brace:
+                    break
+
+            print(self.cur_token.value, self.peek_token.value)
+            #print(self.cur_token.type, self.peek_token.type)
+
+            #var: type [<- value] ;var_def 
+            if self.cur_token.type == TYPE_IDENTIFIER and self.peek_token.value == ":":
+                print("VAR_DEF")
+                st = self.parse_var_def()
+
+            #var <- expr ;assignment
+                print("ASSIGNMENT")
+            elif self.cur_token.type == TYPE_IDENTIFIER and self.peek_token.value == "<-":
+                st = self.parse_assignment()
+
+            elif self.cur_token.value == "loop" and self.peek_token.value != "{":
+                print("COUNT")
+                left_brace += 1
+                st = self.parse_count_loop()
+
+            elif self.cur_token.value == "loop" and self.peek_token.value == "{":
+                print("INFINIT_LOOP")
+                left_brace += 1
+                st = self.parse_infinit_loop()
+
+            print()
+           
+            if st is not None:
+                tree.add_statement(st)
 
             else:
                 self.next()
 
-
-        print(tree.statements)
+        return tree
 

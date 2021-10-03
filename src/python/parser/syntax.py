@@ -15,7 +15,8 @@ class COMPOUND_STATEMENT:
 
 class STATEMENT:
     #statement
-    self.statement = None
+    def __init__(self, statement):
+        self.statement = None
 
 #variable definition
 class VAR_DEF:
@@ -25,13 +26,18 @@ class VAR_DEF:
         self.expr = None
 
 class ASSIGNMENT:
-    pass
+    def __init__(self, name=None, expr=None):
+        self.name = name
+        self.expr = expr
 
 class COUNT_LOOP:
-    pass
+    def __init__(self, n=None, statements=None):
+        self.n = n
+        self.statements = statements
 
 class INFINIT_LOOP:
-    pass
+    def __init__(self, statements=None):
+        self.statements = statements
 
 class BREAK:
     pass
@@ -90,24 +96,29 @@ class POSTFIX:
 
 class EXPR:
     def __init__(self, left=None, oper=None, right=None):
-        self.left = None
-        self.right = None
-        self.oper = None
+        self.left = left
+        self.right = right
+        self.oper = oper
 
 class INTEGER:
-    pass
+    def __init__(self, value):
+        self.value = value
 
 class FLOAT:
-    pass
+    def __init__(self, value):
+        self.value = value
 
 class IDENT:
-    pass
+    def __init__(self, name):
+        self.name = name
 
 class STRING:
-    pass
+    def __init__(self, value):
+        self.value = value
 
 class BOOL:
-    pass
+    def __init__(self, value):
+        self.value = value
 
 class LIST:
     pass
