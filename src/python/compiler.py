@@ -5,7 +5,8 @@ from parser.parser import Parser
 from parser.pretty_print import pretty_print
 
 code = """
-import random, math table 
+print(10+10, 20*30)
+write()
 """
 
 tokens = lexer(code)

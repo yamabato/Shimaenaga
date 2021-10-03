@@ -94,6 +94,13 @@ class FINALLY:
 class FUNC_DEF:
     pass
 
+class ARGS:
+    def __init__(self, args=[]):
+        self.args = args
+
+    def add_arg(self, arg):
+        self.args.append(arg)
+
 class RETURN:
     def __init__(self, exprs=None):
         self.exprs = exprs
@@ -116,7 +123,9 @@ class CALL_LIB_FUNC:
     pass
 
 class CALL_FUNC:
-    pass
+    def __init__(self, name=None, args=None):
+        self.name = name
+        self.args = args
 
 #postfix operators, suck as ++ or --
 class POSTFIX:

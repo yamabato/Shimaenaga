@@ -269,7 +269,32 @@ class Parser:
             self.next()
 
         return node
-        
+
+    def parse_call_func(self):
+        name = self.cur_token.value
+        self.next()
+        self.next()
+
+        node = CALL_FUNC(name)
+        args = ARGS([])
+
+        while True:
+            if self.cur_token.value == ")":
+                break
+
+            arg = self.parse_expression()
+            args.add_arg(arg)
+
+            if self.cur_token.value == ",":
+                self.next()
+
+            elif self.cur_token.value != ")":
+                return None
+
+        if args.args != []: node.args = args
+
+        return node
+                
     def parse(self):
         tree = COMPOUND_STATEMENT()
 
@@ -331,6 +356,9 @@ class Parser:
             elif self.cur_token.value == "import":
                 print("IMPORT")
                 st = self.parse_import()
+
+            elif self.cur_token.type == "IDENT" and self.peek_token.value == "(":
+                st = self.parse_call_func()
 
             if st is not None:
                 tree.add_statement(st)

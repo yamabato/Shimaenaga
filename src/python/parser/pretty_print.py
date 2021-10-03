@@ -195,6 +195,26 @@ def import_print(node):
 
     decrease_indent()
 
+def call_func_print(node):
+    write(":CALL_FUNC")
+    increase_indent()
+
+    write(node.name)
+
+    if node.args is not None:
+        pretty_print(node.args)
+
+    decrease_indent()
+
+def args_print(node):
+    write(":ARGS")
+    increase_indent()
+
+    for arg in node.args:
+        pretty_print(arg)
+
+    decrease_indent()
+
 syntax_f = {
     COMPOUND_STATEMENT: compound_statement_print,
 
@@ -223,6 +243,9 @@ syntax_f = {
     EXPRS: exprs_print,
 
     IMPORT: import_print,
+
+    CALL_FUNC: call_func_print,
+    ARGS: args_print,
 }
 
 def pretty_print(node):
