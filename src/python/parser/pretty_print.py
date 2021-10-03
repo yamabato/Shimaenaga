@@ -5,18 +5,23 @@ indent = 0
 
 def increase_indent():
     global indent
-    indent += 2
+    indent += 4
 
 def decrease_indent():
     global indent
-    indent -= 2
+    indent -= 4
 
 def write(arg):
     print(" "*indent + str(arg))
 
 def compound_statement_print(node):
+    write(":STATEMENTS")
+    increase_indent()
+
     for st in node.statements:
         pretty_print(st)
+
+    decrease_indent()
 
 def expr_print(node):
     write(":EXPR")
@@ -30,6 +35,38 @@ def expr_print(node):
 
 def integer_print(node):
     write(":INTEGER")
+    increase_indent()
+
+    write(node.value)
+
+    decrease_indent()
+
+def float_print(node):
+    write(":FLOAT")
+    increase_indent()
+
+    write(node.value)
+
+    decrease_indent()
+
+def ident_print(node):
+    write(":IDENT")
+    increase_indent()
+
+    write(node.name)
+
+    decrease_indent()
+
+def string_print(node):
+    write(":STRING")
+    increase_indent
+
+    write(node.value)
+
+    decrease_indent()
+
+def bool_print(node):
+    write(":BOOL")
     increase_indent()
 
     write(node.value)
@@ -79,17 +116,73 @@ def count_loop_print(node):
     pretty_print(node.statements)
 
     decrease_indent()
-    
+
+def branch_print(node):
+    write(":BRANCH")
+    increase_indent()
+
+    pretty_print(node.if_clause)
+
+    if node.elif_clauses is not None:
+        pretty_print(node.elif_clauses)
+
+    if node.else_clause is not None:
+        pretty_print(node.else_clause)
+
+    decrease_indent()
+
+def if_print(node):
+    write(":IF")
+    increase_indent()
+
+    pretty_print(node.condition)
+    pretty_print(node.statements)
+
+    decrease_indent()
+
+def elif_print(node):
+    write(":ELIF")
+    increase_indent()
+
+    pretty_print(node.condition)
+    pretty_print(node.statements)
+
+    decrease_indent()
+
+
+def elif_clauses_print(node):
+    for clause in node.elif_clauses:
+        pretty_print(clause)
+
+def else_print(node):
+    write(":ELSE")
+    increase_indent()
+
+    pretty_print(node.statements)
+
+    decrease_indent()
 
 syntax_f = {
     COMPOUND_STATEMENT: compound_statement_print,
 
     EXPR: expr_print,
     INTEGER: integer_print,
+    FLOAT: float_print,
+    IDENT: ident_print,
+    STRING: string_print,
+    BOOL: bool_print,
+
     VAR_DEF: var_def_print,
     ASSIGNMENT: assignment_print,
+
     INFINIT_LOOP: infinit_loop_print,
     COUNT_LOOP: count_loop_print,
+    
+    BRANCH: branch_print,
+    IF: if_print,
+    ELIF: elif_print,
+    ELIF_CLAUSES: elif_clauses_print,
+    ELSE: else_print,
 }
 
 def pretty_print(node):

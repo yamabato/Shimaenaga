@@ -50,16 +50,31 @@ class IF:
 
 #conditional branch
 class BRANCH:
-    pass
+    def __init__(self, if_clause=None, elif_clauses=None, else_clause=None):
+        self.if_clause = if_clause
+        self.elif_clauses = elif_clauses
+        self.else_clause = else_clause
 
 class IF:
-    pass
+    def __init__(self, condition=None, statements=None):
+        self.condition = condition
+        self.statements = statements
+
+class ELIF_CLAUSES:
+    def __init__(self, elif_clauses=[]):
+        self.elif_clauses = elif_clauses
+
+    def add_clause(self, elif_clause):
+        self.elif_clauses.append(elif_clause)
 
 class ELIF:
-    pass
+    def __init__(self, condition=None, statements=None):
+        self.condition = condition
+        self.statements = statements
 
 class ELSE:
-    pass
+    def __init__(self, statements=None):
+        self.statements = statements
 
 class SWITCH:
     pass

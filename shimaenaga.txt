@@ -85,6 +85,8 @@ if (c1){
 }
 
 if - [elif...] - [else]となるようにする。条件部分は()に入れる。
+{はif, elif, elseのすぐ後におく
+elif, elseは}のすぐ後におく
 
 switch {
     case (c1){

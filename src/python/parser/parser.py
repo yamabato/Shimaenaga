@@ -15,6 +15,10 @@ class Parser:
 
         self.error_occured = False
 
+        self.left_brace = 0
+        self.right_brace = 0
+
+
     def error(self):
         self.error_occured = True
         print("Error!!")
@@ -146,9 +150,6 @@ class Parser:
         if self.cur_token.value != "{":
             return None
 
-        self.next()
-
-
         st = self.parse()
 
         return COUNT_LOOP(n, st)
@@ -160,14 +161,67 @@ class Parser:
 
         return INFINIT_LOOP(st)
 
+    def parse_branch(self):
+        self.next()
+        self.next()
+
+        if_condition = self.parse_expression()
+
+        if self.cur_token.value != ")":
+            return None
+        if self.peek_token.value != "{":
+            return None
+
+        self.next()
+
+        if_st = self.parse()
+        
+        if_clause = IF(if_condition, if_st)
+        
+        elif_clauses = ELIF_CLAUSES()
+
+        while True:
+            if self.cur_token.value == "elif":
+                if self.peek_token.value != "(":
+                    return None
+
+                self.next()
+                condition = self.parse_expression()
+
+                if self.cur_token.value != "{":
+                    return None
+                
+                st = self.parse()
+
+                elif_clause = ELIF(condition, st)
+                elif_clauses.add_clause(elif_clause)
+
+            else:
+                break
+
+        else_clause = ELSE()
+
+        if self.cur_token.value == "else":
+            self.next()
+
+            if self.cur_token.value != "{":
+                return None
+
+            st = self.parse()
+
+            else_clause.statements = st
+
+        node = BRANCH(if_clause, elif_clauses, else_clause)
+
+        return node
+
     def parse_block(self):
         block_tokens = []
         
     def parse(self):
         tree = COMPOUND_STATEMENT()
 
-        left_brace = 0
-        right_brace = 0
+        diff = self.left_brace - self.right_brace
 
         while True:
             st = None
@@ -181,35 +235,35 @@ class Parser:
                 continue
 
             if self.cur_token.value == "{":
-                right_brace += 1
-                if left_brace == right_brace:
+                self.left_brace += 1
+
+            if self.cur_token.value == "}":
+                self.right_brace += 1
+                if self.left_brace - self.right_brace == diff:
+                    self.next()
                     break
-
-            print(self.cur_token.value, self.peek_token.value)
-            #print(self.cur_token.type, self.peek_token.type)
-
             #var: type [<- value] ;var_def 
             if self.cur_token.type == TYPE_IDENTIFIER and self.peek_token.value == ":":
                 print("VAR_DEF")
                 st = self.parse_var_def()
 
             #var <- expr ;assignment
-                print("ASSIGNMENT")
             elif self.cur_token.type == TYPE_IDENTIFIER and self.peek_token.value == "<-":
+                print("ASSIGNMENT")
                 st = self.parse_assignment()
 
             elif self.cur_token.value == "loop" and self.peek_token.value != "{":
                 print("COUNT")
-                left_brace += 1
                 st = self.parse_count_loop()
 
             elif self.cur_token.value == "loop" and self.peek_token.value == "{":
                 print("INFINIT_LOOP")
-                left_brace += 1
                 st = self.parse_infinit_loop()
 
-            print()
-           
+            elif self.cur_token.value == "if" and self.peek_token.value == "(":
+                print("BRANCH")
+                st = self.parse_branch()
+
             if st is not None:
                 tree.add_statement(st)
 
