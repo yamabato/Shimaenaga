@@ -5,11 +5,12 @@ from parser.parser import Parser
 from parser.pretty_print import pretty_print
 
 code = """
-switch {
-    case (1==2){
+switch i+2{
+    case 2, 3{
         write()
     }
-    case (2+2 == 2){
+
+    case 4, 5{
         write()
     }
     else{

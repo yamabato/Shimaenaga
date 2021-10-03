@@ -191,6 +191,20 @@ def switch_condition_print(node):
 
     decrease_indent()
 
+def switch_value_print(node):
+    write(":SWITCH_VALUE")
+    increase_indent()
+
+    pretty_print(node.case_clauses)
+
+    if node.else_clause is not None:
+        pretty_print(node.else_clause)
+
+    if node.finally_clause is not None:
+        pretty_print(node.finally_clause)
+
+    decrease_indent()
+
 def match_condition_clauses_print(node):
     write(":MATCH_CONDITION_CLAUSES")
     increase_indent()
@@ -205,6 +219,24 @@ def match_condition_print(node):
     increase_indent()
 
     pretty_print(node.condition)
+    pretty_print(node.statements)
+
+    decrease_indent()
+
+def match_value_clauses_print(node):
+    write(":MATCH_VALUE_CLAUSES")
+    increase_indent()
+
+    for match in node.match_value_clauses:
+        pretty_print(match)
+
+    decrease_indent()
+
+def match_value_print(node):
+    write(":MATCH_VALUE")
+    increase_indent()
+
+    pretty_print(node.exprs)
     pretty_print(node.statements)
 
     decrease_indent()
@@ -303,8 +335,11 @@ syntax_f = {
     ELSE: else_print,
 
     SWITCH_CONDITION: switch_condition_print,
+    SWITCH_VALUE: switch_value_print,
     MATCH_CONDITION_CLAUSES: match_condition_clauses_print,
     MATCH_CONDITION: match_condition_print,
+    MATCH_VALUE_CLAUSES: match_value_clauses_print,
+    MATCH_VALUE: match_value_print,
     FINALLY: finally_print,
 
     RETURN: return_print,

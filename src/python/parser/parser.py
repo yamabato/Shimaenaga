@@ -186,6 +186,7 @@ class Parser:
         self.next()
         self.next()
 
+        node = BRANCH()
         if_condition = self.parse_expression()
 
         if self.cur_token.value != ")":
@@ -198,6 +199,8 @@ class Parser:
         if_st = self.parse()
         
         if_clause = IF(if_condition, if_st)
+
+        node.if_clause = if_clause
         
         elif_clauses = ELIF_CLAUSES()
 
@@ -224,6 +227,7 @@ class Parser:
 
             else:
                 break
+        if elif_clauses.elif_clauses != []: node.elif_clauses = elif_clauses
 
         else_clause = ELSE()
 
@@ -237,8 +241,8 @@ class Parser:
             st = self.parse()
 
             else_clause.statements = st
+            node.else_clause = else_clause
 
-        node = BRANCH(if_clause, elif_clauses, else_clause)
 
         return node
 
@@ -299,7 +303,66 @@ class Parser:
 
 
     def parse_switch_value(self):
-        pass
+        self.next()
+
+        value = self.parse_expression()
+
+        if self.cur_token.value != "{": return None
+        self.next()
+
+        node = SWITCH_VALUE()
+        node.value = value
+
+        match_clauses = MATCH_VALUE_CLAUSES([])
+
+        while True:
+            self.skip_new_lines()
+            if self.cur_token.value == "\n":
+                self.next()
+                continue
+
+            elif self.cur_token.value in ["else", "finally_clause"]:
+                break
+
+            if self.cur_token.value != "case": return None
+            self.next()
+
+            exprs = EXPRS([])
+
+            while True:
+                expr = self.parse_expression()
+                exprs.add_expr(expr)
+
+                if self.cur_token.value == "{":
+                    break
+
+                if self.cur_token.value != ",": return None
+                self.next()
+
+            st = self.parse()
+
+            match_clauses.add_match_value_clause(MATCH_VALUE(exprs, st))
+
+        node.case_clauses = match_clauses
+
+        if self.cur_token.value == "else":
+            self.next()
+            if self.cur_token.value != "{": return None
+
+            st = self.parse()
+            node.else_clause = ELSE(st)
+
+        self.skip_new_lines()
+
+        if self.cur_token.value == "finally":
+            self.next()
+            if self.cur_token.value != "{": return None
+
+            st = self.parse()
+            node.finally_clause = FINALLY(st)
+
+        return node
+            
 
     def parse_return(self):
         self.next()
