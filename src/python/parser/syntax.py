@@ -40,13 +40,12 @@ class INFINIT_LOOP:
         self.statements = statements
 
 class BREAK:
-    pass
+    def __init__(self):
+        pass
 
 class CONTINUE:
-    pass
-
-class IF:
-    pass
+    def __init__(self):
+        pass
 
 #conditional branch
 class BRANCH:
@@ -76,11 +75,17 @@ class ELSE:
     def __init__(self, statements=None):
         self.statements = statements
 
-class SWITCH:
+class SWITCH_CONDITION:
+    pass
+
+class SWITCH_VALUE:
     pass
 
 #case clause
-class MATCH:
+class MATCH_CONDITION:
+    pass
+
+class MATCH_VALUE:
     pass
 
 class FINALLY:
@@ -90,16 +95,24 @@ class FUNC_DEF:
     pass
 
 class RETURN:
-    pass
+    def __init__(self, exprs=None):
+        self.exprs = exprs
+
+class EXPRS:
+    def __init__(self, exprs=[]):
+        self.exprs = exprs
+
+    def add_expr(self, expr):
+        self.exprs.append(expr)
 
 class IMPORT:
-    pass
+    def __init__(self, names=[]):
+        self.names = []
+
+    def add_name(self, name):
+        self.names.append(name)
 
 class CALL_LIB_FUNC:
-    pass
-
-#中置演算子等
-class CALC:
     pass
 
 class CALL_FUNC:

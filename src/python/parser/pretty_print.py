@@ -117,6 +117,12 @@ def count_loop_print(node):
 
     decrease_indent()
 
+def break_print(node):
+    write(":BREAK")
+
+def continue_print(node):
+    write(":CONTINUE")
+
 def branch_print(node):
     write(":BRANCH")
     increase_indent()
@@ -162,6 +168,33 @@ def else_print(node):
 
     decrease_indent()
 
+def return_print(node):
+    write(":RETURN")
+    increase_indent()
+    
+    if node.exprs is not None:
+        pretty_print(node.exprs)
+
+    decrease_indent()
+
+def exprs_print(node):
+    write(":EXPRS")
+    increase_indent()
+
+    for expr in node.exprs:
+        pretty_print(expr)
+
+    decrease_indent()
+
+def import_print(node):
+    write(":IMPORT")
+    increase_indent()
+
+    for name in node.names:
+        write(name)
+
+    decrease_indent()
+
 syntax_f = {
     COMPOUND_STATEMENT: compound_statement_print,
 
@@ -177,12 +210,19 @@ syntax_f = {
 
     INFINIT_LOOP: infinit_loop_print,
     COUNT_LOOP: count_loop_print,
+    BREAK: break_print,
+    CONTINUE: continue_print,
     
     BRANCH: branch_print,
     IF: if_print,
     ELIF: elif_print,
     ELIF_CLAUSES: elif_clauses_print,
     ELSE: else_print,
+
+    RETURN: return_print,
+    EXPRS: exprs_print,
+
+    IMPORT: import_print,
 }
 
 def pretty_print(node):

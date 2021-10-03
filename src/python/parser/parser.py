@@ -161,6 +161,14 @@ class Parser:
 
         return INFINIT_LOOP(st)
 
+    def parse_break(self):
+        self.next()
+        return BREAK()
+
+    def parse_continue(self):
+        self.next()
+        return CONTINUE()
+
     def parse_branch(self):
         self.next()
         self.next()
@@ -215,8 +223,52 @@ class Parser:
 
         return node
 
-    def parse_block(self):
-        block_tokens = []
+    def parse_return(self):
+        self.next()
+
+        node = RETURN()
+        if self.cur_token.value == "\n":
+            return node
+
+        exprs = EXPRS()
+        while True:
+            if self.cur_token.value == "\n":
+                break
+
+            expr = self.parse_expression()
+            exprs.add_expr(expr)
+
+            print(self.cur_token.value)
+            if self.cur_token.value == ",":
+                self.next()
+                pass
+            else:
+                break
+
+        node.exprs = exprs
+        return node
+
+    def parse_import(self):
+        self.next()
+        
+        node = IMPORT()
+
+        while True:
+            if self.cur_token.type != "IDENT":
+                return None
+
+            node.add_name(self.cur_token.value)
+
+            self.next()
+            if self.cur_token.value == "\n":
+                break
+
+            if self.cur_token.value != ",":
+                return None
+
+            self.next()
+
+        return node
         
     def parse(self):
         tree = COMPOUND_STATEMENT()
@@ -260,9 +312,25 @@ class Parser:
                 print("INFINIT_LOOP")
                 st = self.parse_infinit_loop()
 
+            elif self.cur_token.value == "break":
+                print("BREAK")
+                st = self.parse_break()
+
+            elif self.cur_token.value == "continue":
+                print("CONTINUE")
+                st = self.parse_continue()
+
             elif self.cur_token.value == "if" and self.peek_token.value == "(":
                 print("BRANCH")
                 st = self.parse_branch()
+
+            elif self.cur_token.value == "return":
+                print("RETURN")
+                st = self.parse_return()
+
+            elif self.cur_token.value == "import":
+                print("IMPORT")
+                st = self.parse_import()
 
             if st is not None:
                 tree.add_statement(st)

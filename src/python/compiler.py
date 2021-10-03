@@ -5,13 +5,7 @@ from parser.parser import Parser
 from parser.pretty_print import pretty_print
 
 code = """
-if (1+1 == 2){
-    i <- 2
-}elif(1 == 2){
-    i <- 3
-}else{
-    i <- 0
-}
+import random, math table 
 """
 
 tokens = lexer(code)
