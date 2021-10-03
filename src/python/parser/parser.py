@@ -33,6 +33,12 @@ class Parser:
             self.peek_token = Token(EOP, EOP, None)
         else:
             self.peek_token = self.cur_token.next_token
+
+    def skip_new_lines(self):
+        while True:
+            if self.cur_token.value != "\n": break
+
+            self.next()
             
     #cur_tokenは最後にパースした構文の最後にセットしておく
 
@@ -85,8 +91,15 @@ class Parser:
                 #self.next()
                 pass
             return e
+
+        elif self.cur_token.type == TYPE_IDENTIFIER and self.peek_token.value == "(":
+            v = self.parse_call_func()
+
+        elif self.cur_token.type == TYPE_IDENTIFIER and self.peek_token.value == "@":
+            v = self.parse_call_lib_func()
         
-        v = self.parse_value()
+        else:
+            v = self.parse_value()
         return v
 
     def parse_value(self):
@@ -188,7 +201,12 @@ class Parser:
         
         elif_clauses = ELIF_CLAUSES()
 
+        self.skip_new_lines()
         while True:
+            if self.cur_token.value == "\n":
+                self.next()
+                continue
+                
             if self.cur_token.value == "elif":
                 if self.peek_token.value != "(":
                     return None
@@ -209,6 +227,7 @@ class Parser:
 
         else_clause = ELSE()
 
+        self.skip_new_lines()
         if self.cur_token.value == "else":
             self.next()
 
@@ -222,6 +241,65 @@ class Parser:
         node = BRANCH(if_clause, elif_clauses, else_clause)
 
         return node
+
+    def parse_switch_condition(self):
+        self.next()
+        self.next()
+        
+        node = SWITCH_CONDITION()
+        match_clauses = MATCH_CONDITION_CLAUSES([])
+
+        while True:
+            if self.cur_token.value == "\n":
+                self.next()
+                continue
+
+            elif self.cur_token.value in ["else", "finally"]:
+                break
+
+            if self.cur_token.value != "case" or self.peek_token.value != "(": return None
+            self.next()
+            self.next()
+
+            condition = self.parse_expression()
+            self.next()
+
+            if self.cur_token.value != "{":
+                return None
+
+            st = self.parse()
+            
+            match_clause = MATCH_CONDITION(condition, st)
+            match_clauses.add_match_condition_clause(match_clause)
+
+        node.case_clauses = match_clauses
+
+        if self.cur_token.value == "else":
+            self.next()
+            if self.cur_token.value != "{": return None
+            
+            st = self.parse()
+            else_clause = ELSE(st)
+            node.else_clause = else_clause
+
+        elif self.cur_token.value != "{":
+            return None
+
+        self.skip_new_lines()
+
+        if self.cur_token.value == "finally":
+            self.next()
+            if self.cur_token.value != "{": return None
+
+            st = self.parse()
+            finally_clause = FINALLY(st)
+            node.finally_clause = finally_clause
+
+        return node
+
+
+    def parse_switch_value(self):
+        pass
 
     def parse_return(self):
         self.next()
@@ -254,7 +332,7 @@ class Parser:
         node = IMPORT()
 
         while True:
-            if self.cur_token.type != "IDENT":
+            if self.cur_token.type != TYPE_IDENTIFIER:
                 return None
 
             node.add_name(self.cur_token.value)
@@ -292,6 +370,51 @@ class Parser:
                 return None
 
         if args.args != []: node.args = args
+
+        return node
+
+    def parse_call_lib_func(self):
+        name = self.cur_token.value
+        self.next()
+        self.next()
+
+        if self.cur_token.type != TYPE_IDENTIFIER:
+            return None
+
+        lib = self.cur_token.value
+
+        self.next()
+
+        if self.cur_token.value != "(":
+            return None
+        self.next()
+
+        args= ARGS([])
+        while True:
+            if self.cur_token.value == ")":
+                break
+
+            arg = self.parse_expression()
+            args.add_arg(arg)
+
+            if self.cur_token.value == ",":
+                self.next()
+
+            elif self.cur_token.value != ")":
+                return None
+
+        node = CALL_LIB_FUNC(name, lib)
+        if args.args != []: node.args = args
+
+        return node
+
+    def parse_postfix(self):
+        name = self.cur_token.value
+        self.next()
+
+        oper = self.cur_token.value
+
+        node = POSTFIX(name, oper)
 
         return node
                 
@@ -349,6 +472,14 @@ class Parser:
                 print("BRANCH")
                 st = self.parse_branch()
 
+            elif self.cur_token.value == "switch" and self.peek_token.value == "{":
+                print("SWITCH CONDITION")
+                st = self.parse_switch_condition()
+               
+            elif self.cur_token.value == "switch" and self.peek_token.value != "{":
+                print("SWITCH VALUE")
+                st = self.parse_switch_value()
+
             elif self.cur_token.value == "return":
                 print("RETURN")
                 st = self.parse_return()
@@ -357,8 +488,17 @@ class Parser:
                 print("IMPORT")
                 st = self.parse_import()
 
-            elif self.cur_token.type == "IDENT" and self.peek_token.value == "(":
+            elif self.cur_token.type == TYPE_IDENTIFIER and self.peek_token.value == "(":
+                print("CALL FUNC")
                 st = self.parse_call_func()
+
+            elif self.cur_token.type == TYPE_IDENTIFIER and self.peek_token.value == "@":
+                print("CALL LIB FUNC")
+                st = self.parse_call_lib_func()
+
+            elif self.cur_token.type == TYPE_IDENTIFIER and self.peek_token.value in ["++", "--"]:
+                print("POSTFIX OPERATOR")
+                st = self.parse_postfix()
 
             if st is not None:
                 tree.add_statement(st)

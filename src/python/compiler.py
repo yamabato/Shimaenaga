@@ -5,8 +5,25 @@ from parser.parser import Parser
 from parser.pretty_print import pretty_print
 
 code = """
-print(10+10, 20*30)
-write()
+switch {
+    case (1==2){
+        write()
+    }
+    case (2+2 == 2){
+        write()
+    }
+    else{
+        write()
+    }
+    finally{
+        write()
+    }
+}
+loop {
+    if (1==2){
+        print()
+    }
+}
 """
 
 tokens = lexer(code)

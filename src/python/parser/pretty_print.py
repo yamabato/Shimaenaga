@@ -33,6 +33,15 @@ def expr_print(node):
 
     decrease_indent()
 
+def postfix_print(node):
+    write(":POSTFIX")
+    increase_indent()
+
+    write(node.name)
+    write(node.oper)
+
+    decrease_indent()
+
 def integer_print(node):
     write(":INTEGER")
     increase_indent()
@@ -59,7 +68,7 @@ def ident_print(node):
 
 def string_print(node):
     write(":STRING")
-    increase_indent
+    increase_indent()
 
     write(node.value)
 
@@ -168,6 +177,47 @@ def else_print(node):
 
     decrease_indent()
 
+def switch_condition_print(node):
+    write(":SWITCH_CONDITION")
+    increase_indent()
+
+    pretty_print(node.case_clauses)
+
+    if node.else_clause is not None:
+        pretty_print(node.else_clause)
+
+    if node.finally_clause is not None:
+        pretty_print(node.finally_clause)
+
+    decrease_indent()
+
+def match_condition_clauses_print(node):
+    write(":MATCH_CONDITION_CLAUSES")
+    increase_indent()
+
+    for match in node.match_condition_clauses:
+        pretty_print(match)
+
+    decrease_indent()
+
+def match_condition_print(node):
+    write(":MATCH_CONDITION")
+    increase_indent()
+
+    pretty_print(node.condition)
+    pretty_print(node.statements)
+
+    decrease_indent()
+
+def finally_print(node):
+    write(":FINALLY")
+    increase_indent()
+
+    pretty_print(node.statements)
+
+    decrease_indent()
+
+
 def return_print(node):
     write(":RETURN")
     increase_indent()
@@ -206,6 +256,18 @@ def call_func_print(node):
 
     decrease_indent()
 
+def call_lib_func_print(node):
+    write(":CALL_LIB_FUNC")
+    increase_indent()
+
+    write(node.name)
+    write(node.lib)
+
+    if node.args is not None:
+        pretty_print(node.args)
+
+    decrease_indent()
+
 def args_print(node):
     write(":ARGS")
     increase_indent()
@@ -219,6 +281,7 @@ syntax_f = {
     COMPOUND_STATEMENT: compound_statement_print,
 
     EXPR: expr_print,
+    POSTFIX: postfix_print,
     INTEGER: integer_print,
     FLOAT: float_print,
     IDENT: ident_print,
@@ -239,12 +302,18 @@ syntax_f = {
     ELIF_CLAUSES: elif_clauses_print,
     ELSE: else_print,
 
+    SWITCH_CONDITION: switch_condition_print,
+    MATCH_CONDITION_CLAUSES: match_condition_clauses_print,
+    MATCH_CONDITION: match_condition_print,
+    FINALLY: finally_print,
+
     RETURN: return_print,
     EXPRS: exprs_print,
 
     IMPORT: import_print,
 
     CALL_FUNC: call_func_print,
+    CALL_LIB_FUNC: call_lib_func_print,
     ARGS: args_print,
 }
 

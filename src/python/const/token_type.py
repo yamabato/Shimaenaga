@@ -77,6 +77,11 @@ COMP_OPER = [
     "!=",
 ]
 
+POSTFIX_OPER = [
+    "++",
+    "--",
+]
+
 STR_SIGN = ['"', "'"]
 COMMENT_SIGN = [";"]
 BOOL = {"true": True, "false": False}

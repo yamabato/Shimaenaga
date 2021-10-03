@@ -76,20 +76,46 @@ class ELSE:
         self.statements = statements
 
 class SWITCH_CONDITION:
-    pass
+    def __init__(self, case_clauses=None, else_clause=None, finally_clause=None):
+        self.case_clauses = case_clauses
+        self.else_clause = else_clause
+        self.finally_clause = finally_clause
 
 class SWITCH_VALUE:
-    pass
+    def __init__(self, value=None, case_clauses=None, else_clause=None, finally_clause=None):
+        self.value = value
+        self.case_clauses = case_clauses
+        self.else_clause = else_clause
+        self.finally_clause = finally_clause
 
 #case clause
 class MATCH_CONDITION:
-    pass
+    def __init__(self, condition=None, statements=None):
+        self.condition = condition
+        self.statements = statements
 
 class MATCH_VALUE:
-    pass
+    def __init__(self, exprs=None, statements=None):
+        self.exprs = exprs
+        self.statements = statements
+
+class MATCH_CONDITION_CLAUSES:
+    def __init__(self, match_condition_clauses=[]):
+        self.match_condition_clauses = match_condition_clauses
+
+    def add_match_condition_clause(self, clause):
+        self.match_condition_clauses.append(clause)
+
+class MATCH_VALUE_CLAUSES:
+    def __init__(self, match_value_clauses=[]):
+        self.match_value_clauses = match_value_clauses
+
+    def add_match_value_clause(self, clause):
+        self.match_value_clauses.append(clause)
 
 class FINALLY:
-    pass
+    def __init__(self, statements=None):
+        self.statements = statements
 
 class FUNC_DEF:
     pass
@@ -120,7 +146,10 @@ class IMPORT:
         self.names.append(name)
 
 class CALL_LIB_FUNC:
-    pass
+    def __init__(self, name=None, lib=None, args=None):
+        self.name = name
+        self.lib = lib
+        self.args = args
 
 class CALL_FUNC:
     def __init__(self, name=None, args=None):
@@ -129,7 +158,9 @@ class CALL_FUNC:
 
 #postfix operators, suck as ++ or --
 class POSTFIX:
-    pass
+    def __init__(self, name=None, oper=None):
+        self.name = name
+        self.oper = oper
 
 class EXPR:
     def __init__(self, left=None, oper=None, right=None):
