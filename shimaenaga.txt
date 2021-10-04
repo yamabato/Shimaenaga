@@ -136,6 +136,9 @@ func name(arg1: type, arg2: type, ...)(ret1: type, ret2: type, ...){
     ~
     return ret1, ret2, ...
 }
+func name(arg1: type, arg2: type, ...)(){
+    ~
+}
 
 引数、返り値はいくらでも指定可能。
 

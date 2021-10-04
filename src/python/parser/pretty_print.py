@@ -277,6 +277,17 @@ def import_print(node):
 
     decrease_indent()
 
+def func_def_print(node):
+    write(":FUNC_DEF")
+    increase_indent()
+
+    write(node.name)
+    write(", ".join(map(lambda x: x[0] + ": " + x[1],node.arg_names)))
+    write(", ".join(map(lambda x: x[0] + ": " + x[1],node.return_names)))
+    pretty_print(node.statements)
+
+    decrease_indent()
+
 def call_func_print(node):
     write(":CALL_FUNC")
     increase_indent()
@@ -347,6 +358,7 @@ syntax_f = {
 
     IMPORT: import_print,
 
+    FUNC_DEF: func_def_print,
     CALL_FUNC: call_func_print,
     CALL_LIB_FUNC: call_lib_func_print,
     ARGS: args_print,

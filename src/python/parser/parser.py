@@ -114,6 +114,9 @@ class Parser:
 
         if self.cur_token.type == TYPE_BOOL:
             return BOOL(self.cur_token.value)
+
+        if self.cur_token.type == TYPE_IDENTIFIER:
+            return IDENT(self.cur_token.value)
     
     def parse_var_def(self):
         name = self.cur_token.value
@@ -362,7 +365,6 @@ class Parser:
             node.finally_clause = FINALLY(st)
 
         return node
-            
 
     def parse_return(self):
         self.next()
@@ -411,6 +413,79 @@ class Parser:
 
         return node
 
+    def parse_func_def(self):
+        self.next()
+
+        node = FUNC_DEF()
+
+        name = self.cur_token.value
+        node.name = name
+
+        self.next()
+        if self.cur_token.value != "(": return None
+        self.next()
+        
+        args = []
+        while True:
+            if self.cur_token.value == ")": break
+                
+            if self.cur_token.type != TYPE_IDENTIFIER: return None
+            arg_name = self.cur_token.value
+            self.next()
+
+            if self.cur_token.value != ":": return None
+            self.next()
+
+            if self.cur_token.type != TYPE_TYPE_KEYWORD: return None
+            arg_type = self.cur_token.value
+            self.next()
+
+            args.append((arg_name, arg_type))
+            if self.cur_token.value == ",":
+                self.next()
+                continue
+
+            if self.cur_token.value != ")": return None
+
+        self.next()
+        node.arg_names = args
+
+
+        if self.cur_token.value != "(": return None
+        self.next()
+
+        return_names = []
+        while True:
+            if self.cur_token.value == ")": break
+                
+            if self.cur_token.type != TYPE_IDENTIFIER: return None
+            return_name = self.cur_token.value
+            self.next()
+
+            if self.cur_token.value != ":": return None
+            self.next()
+
+            if self.cur_token.type != TYPE_TYPE_KEYWORD: return None
+            return_type = self.cur_token.value
+            self.next()
+
+            return_names.append((return_name, return_type))
+            if self.cur_token.value == ",":
+                self.next()
+                continue
+
+            if self.cur_token.value != ")": return None
+
+        node.return_names = return_names
+
+        self.next()
+        st = self.parse()
+        node.statements = st
+
+        return node
+
+
+
     def parse_call_func(self):
         name = self.cur_token.value
         self.next()
@@ -433,6 +508,7 @@ class Parser:
                 return None
 
         if args.args != []: node.args = args
+        self.next()
 
         return node
 
@@ -489,7 +565,9 @@ class Parser:
         while True:
             st = None
 
-            if self.error_occured: break
+            if self.error_occured:
+                print("ERROR")
+                break
 
             if self.cur_token.value == EOP: break
             if self.cur_token is None: break
@@ -499,74 +577,76 @@ class Parser:
 
             if self.cur_token.value == "{":
                 self.left_brace += 1
+                self.next()
+                continue
 
             if self.cur_token.value == "}":
                 self.right_brace += 1
                 if self.left_brace - self.right_brace == diff:
                     self.next()
                     break
+
+            if self.cur_token.value == "\n":
+                self.next()
+                continue
+
             #var: type [<- value] ;var_def 
             if self.cur_token.type == TYPE_IDENTIFIER and self.peek_token.value == ":":
-                print("VAR_DEF")
                 st = self.parse_var_def()
 
             #var <- expr ;assignment
             elif self.cur_token.type == TYPE_IDENTIFIER and self.peek_token.value == "<-":
-                print("ASSIGNMENT")
                 st = self.parse_assignment()
 
             elif self.cur_token.value == "loop" and self.peek_token.value != "{":
-                print("COUNT")
                 st = self.parse_count_loop()
 
             elif self.cur_token.value == "loop" and self.peek_token.value == "{":
-                print("INFINIT_LOOP")
                 st = self.parse_infinit_loop()
 
             elif self.cur_token.value == "break":
-                print("BREAK")
                 st = self.parse_break()
 
             elif self.cur_token.value == "continue":
-                print("CONTINUE")
                 st = self.parse_continue()
 
             elif self.cur_token.value == "if" and self.peek_token.value == "(":
-                print("BRANCH")
                 st = self.parse_branch()
 
             elif self.cur_token.value == "switch" and self.peek_token.value == "{":
-                print("SWITCH CONDITION")
                 st = self.parse_switch_condition()
                
             elif self.cur_token.value == "switch" and self.peek_token.value != "{":
-                print("SWITCH VALUE")
                 st = self.parse_switch_value()
 
             elif self.cur_token.value == "return":
-                print("RETURN")
                 st = self.parse_return()
 
             elif self.cur_token.value == "import":
-                print("IMPORT")
                 st = self.parse_import()
 
             elif self.cur_token.type == TYPE_IDENTIFIER and self.peek_token.value == "(":
-                print("CALL FUNC")
                 st = self.parse_call_func()
 
             elif self.cur_token.type == TYPE_IDENTIFIER and self.peek_token.value == "@":
-                print("CALL LIB FUNC")
                 st = self.parse_call_lib_func()
 
             elif self.cur_token.type == TYPE_IDENTIFIER and self.peek_token.value in ["++", "--"]:
-                print("POSTFIX OPERATOR")
                 st = self.parse_postfix()
+
+            elif self.cur_token.value == "func" and self.peek_token.type == TYPE_IDENTIFIER:
+                st = self.parse_func_def()
+
+            else:
+                print("!")
+                self.next()
+                continue
 
             if st is not None:
                 tree.add_statement(st)
 
             else:
+                print("ERROR")
                 self.next()
 
         return tree

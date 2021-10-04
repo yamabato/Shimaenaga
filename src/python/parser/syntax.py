@@ -118,7 +118,11 @@ class FINALLY:
         self.statements = statements
 
 class FUNC_DEF:
-    pass
+    def __init__(self, name=None, arg_names=None, return_names=None, statements=None):
+        self.name = name
+        self.arg_names = arg_names
+        self.return_names = return_names
+        self.statements = statements
 
 class ARGS:
     def __init__(self, args=[]):
