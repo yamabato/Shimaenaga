@@ -381,7 +381,6 @@ class Parser:
             expr = self.parse_expression()
             exprs.add_expr(expr)
 
-            print(self.cur_token.value)
             if self.cur_token.value == ",":
                 self.next()
                 pass
@@ -454,37 +453,28 @@ class Parser:
         if self.cur_token.value != "(": return None
         self.next()
 
-        return_names = []
+        return_types = []
         while True:
             if self.cur_token.value == ")": break
                 
-            if self.cur_token.type != TYPE_IDENTIFIER: return None
-            return_name = self.cur_token.value
-            self.next()
-
-            if self.cur_token.value != ":": return None
-            self.next()
-
             if self.cur_token.type != TYPE_TYPE_KEYWORD: return None
             return_type = self.cur_token.value
             self.next()
 
-            return_names.append((return_name, return_type))
+            return_types.append(return_type)
             if self.cur_token.value == ",":
                 self.next()
                 continue
 
             if self.cur_token.value != ")": return None
 
-        node.return_names = return_names
+        node.return_types = return_types
 
         self.next()
         st = self.parse()
         node.statements = st
 
         return node
-
-
 
     def parse_call_func(self):
         name = self.cur_token.value

@@ -25,7 +25,7 @@ def check_token_type(token):
     if token in KEYWORD_TYPE:
         return TYPE_TYPE_KEYWORD
  
-    if token in BOOL:
+    if token in BOOL_KEYWORD:
         return TYPE_BOOL
    
     if token.isdigit():
@@ -47,7 +47,7 @@ def eval_token(token, token_type):
         return token
 
     if token_type == TYPE_BOOL:
-        return BOOL[token]
+        return BOOL_KEYWORD[token]
 
     if token_type == TYPE_INTEGER:
         return int(token)

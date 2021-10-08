@@ -43,44 +43,19 @@ def postfix_print(node):
     decrease_indent()
 
 def integer_print(node):
-    write(":INTEGER")
-    increase_indent()
-
-    write(node.value)
-
-    decrease_indent()
+    write(f":INTEGER({node.value})")
 
 def float_print(node):
-    write(":FLOAT")
-    increase_indent()
-
-    write(node.value)
-
-    decrease_indent()
+    write(f":FLOAT({node.value})")
 
 def ident_print(node):
-    write(":IDENT")
-    increase_indent()
-
-    write(node.name)
-
-    decrease_indent()
+    write(f":IDENT({node.name})")
 
 def string_print(node):
-    write(":STRING")
-    increase_indent()
-
-    write(node.value)
-
-    decrease_indent()
+    write(f":STRING({node.value})")
 
 def bool_print(node):
-    write(":BOOL")
-    increase_indent()
-
-    write(node.value)
-
-    decrease_indent()
+    write(f":BOOL({node.value})")
 
 def var_def_print(node):
     name = node.name
@@ -283,7 +258,7 @@ def func_def_print(node):
 
     write(node.name)
     write(", ".join(map(lambda x: x[0] + ": " + x[1],node.arg_names)))
-    write(", ".join(map(lambda x: x[0] + ": " + x[1],node.return_names)))
+    write(", ".join(node.return_types))
     pretty_print(node.statements)
 
     decrease_indent()

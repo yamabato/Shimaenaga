@@ -132,7 +132,7 @@ var: type <- value
 矢印の先に変数を置き、そこに値を代入する。
 
 - 関数定義 -
-func name(arg1: type, arg2: type, ...)(ret1: type, ret2: type, ...){
+func name(arg1: type, arg2: type, ...)(type1, type2, ...){
     ~
     return ret1, ret2, ...
 }
