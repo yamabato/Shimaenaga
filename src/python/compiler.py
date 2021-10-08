@@ -3,13 +3,11 @@
 from lexer.lexer import lexer
 from parser.parser import Parser
 from parser.pretty_print import pretty_print
+from generator.gen_yse import generator
 
 code = """
-func fib(n: integer)(integer){
-    write(1*2*(3+(4+5)) + i)
-}
-write("ABC")
-write(true)
+i <- 10 + 20 * 30
+a <- 10
 """
 
 tokens = lexer(code)
@@ -17,3 +15,6 @@ parser = Parser(tokens)
 tree = parser.parse()
 
 pretty_print(tree)
+
+yse_code = generator(tree)
+print(yse_code)
