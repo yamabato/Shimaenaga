@@ -24,7 +24,7 @@ def gen_assignment(tree):
 
     generator(expr)
     add_code("pop", 0, "a")
-    add_code("stv", "$a", name)
+    add_code("stv", name, "$a")
 
     return code
     
@@ -32,8 +32,8 @@ def gen_expr(tree):
     generator(tree.left)
     generator(tree.right)
 
-    add_code("pop", "b")
-    add_code("pop", "a")
+    add_code("pop", 0, "b")
+    add_code("pop", 0, "a")
     
     op = opers[tree.oper]
     add_code(op, "$a", "$b", "a")
@@ -46,6 +46,11 @@ def gen_integer(tree):
 
     add_code("psh", 0, value)
 
+def gen_ident(tree):
+    name = tree.name
+
+    add_code("psh", 0, name)
+
 opers = {
     "+": "add",
     "-": "sub",
@@ -55,6 +60,11 @@ opers = {
     "%": "mod",
 }
 
+postfix_opers = {
+    "++": "add",
+    "--": "sub",
+}
+
 generators = {
     COMPOUND_STATEMENT: gen_compound_statement,
     ASSIGNMENT: gen_assignment,
@@ -62,6 +72,7 @@ generators = {
     EXPR: gen_expr,
 
     INTEGER: gen_integer,
+    IDENT: gen_ident,
 }
 
 def generator(tree):
