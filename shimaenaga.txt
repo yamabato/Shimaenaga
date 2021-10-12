@@ -161,6 +161,9 @@ import Library
 - ライブラリ -
 ShimaenagaまたはYokoshimaenagaで書く
 
+YSE(Yokoshimaenaga製 普通使わないよう,基本関数)
+ putchar
+
 Math
 Io
 Random
