@@ -7,8 +7,8 @@ from generator.gen_yse import generator
 from gen_py.gen import gen_executable_code
 
 code = """
-func f(a1: integer, a2: integer)(float){
-    return 1.0
+func f(a1: integer, a2: integer)(integer){
+    return a1 + a2
 }
 
 f(10, 20+2)

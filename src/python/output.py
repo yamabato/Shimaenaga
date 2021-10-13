@@ -69,12 +69,20 @@ def _se_call(name, args):
     f, arg_types, ret = _se_functions[name]
 
     if len(arg_types) != len(args): _se_error()
-    for arg, t in zip(args, arg_types):
-        if not isinstance(arg, t): _se_error()
+    for arg, at in zip(args, arg_types):
+        if not isinstance(arg, at): _se_error()
 
     ret_value = f(*args)
 
     if (0 if ret_value is None else len(ret_value)) != len(ret): _se_error()
+
+    for r, rt in zip(ret_value, ret):
+        if not isinstance(r, rt): _se_error()
+
+    if len(ret_value) == 1:
+        ret_value = ret_value[0]
+
+    return ret_value
 
 def _se_print(*values):
     for v in values:
@@ -94,6 +102,6 @@ _se_var_def("#counter", _se_Integer, 0)
 #-*-*-*-
 
 def f_(a1, a2):
-    return _se_Float(1.0)
-_se_functions["f"] = [f_, [_se_Integer, _se_Integer], [_se_Float]]
+    return [_se_add(_se_Ident("a1"), _se_Ident("a2"))]
+_se_functions["f"] = [f_, [_se_Integer, _se_Integer], [_se_Integer]]
 _se_call("f", (_se_Integer(10), _se_add(_se_Integer(20), _se_Integer(2))))

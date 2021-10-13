@@ -75,7 +75,7 @@ def gen_func_def(tree):
 def gen_return(tree):
     values = gen_python_code(tree.exprs)
 
-    return add_indent([f"return {values}"])
+    return add_indent([f"return [{values}]"])
 
 def gen_call_func(tree):
     name = tree.name

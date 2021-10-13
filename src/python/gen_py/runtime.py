@@ -69,12 +69,20 @@ def _se_call(name, args):
     f, arg_types, ret = _se_functions[name]
 
     if len(arg_types) != len(args): _se_error()
-    for arg, t in zip(args, arg_types):
-        if not isinstance(arg, t): _se_error()
+    for arg, at in zip(args, arg_types):
+        if not isinstance(arg, at): _se_error()
 
     ret_value = f(*args)
 
     if (0 if ret_value is None else len(ret_value)) != len(ret): _se_error()
+
+    for r, rt in zip(ret_value, ret):
+        if not isinstance(r, rt): _se_error()
+
+    if len(ret_value) == 1:
+        ret_value = ret_value[0]
+
+    return ret_value
 
 def _se_print(*values):
     for v in values:
