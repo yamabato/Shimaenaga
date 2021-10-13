@@ -47,3 +47,5 @@ def _se_assignment(name, value):
 
 #name: [type, value]
 _se_environment = {}
+_se_var_def("i", _se_Integer, _se_Integer(0))
+_se_assignment("i", _se_add(_se_Integer(10), _se_Integer(1)))

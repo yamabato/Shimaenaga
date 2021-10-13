@@ -7,8 +7,8 @@ from generator.gen_yse import generator
 from gen_py.gen import gen_executable_code
 
 code = """
-i <- (10 + 20) * 20 + i
-a <- 10 + 20
+i: integer
+i <- 10 + 1
 """
 
 tokens = lexer(code)
@@ -19,6 +19,10 @@ tree = parser.parse()
 
 python_code = gen_executable_code(tree)
 print(python_code)
+
+file_name = "output.py"
+with open(file_name, mode="w", encoding="utf-8") as f:
+    f.write(python_code)
 
 #yse_code = generator(tree)
 #print(yse_code)
