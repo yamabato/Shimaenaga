@@ -64,13 +64,19 @@ def _se_assignment(name, value):
     _se_environment[name][1] = value
 
 def _se_call(name, args):
+    global _se_environment
     if name not in _se_functions: _se_error()
 
     f, arg_types, ret = _se_functions[name]
 
     if len(arg_types) != len(args): _se_error()
     for arg, at in zip(args, arg_types):
-        if not isinstance(arg, at): _se_error()
+        if not isinstance(arg, at[1]): _se_error()
+
+    env = _se_environment.copy()
+
+    for at, arg in zip(arg_types, args):
+        _se_var_def(*at, arg)
 
     ret_value = f(*args)
 
@@ -81,6 +87,8 @@ def _se_call(name, args):
 
     if len(ret_value) == 1:
         ret_value = ret_value[0]
+
+    _se_environment = env
 
     return ret_value
 
@@ -99,5 +107,5 @@ _se_functions = {}
 
 _se_var_def("#counter", _se_Integer, 0)
 
-#-*-*-*-
+#---
 

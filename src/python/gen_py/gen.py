@@ -8,8 +8,16 @@ from const.token_type import *
 
 value_n = 0
 indent = 0
+in_expr = False
+in_func = False
+in_loop = False
+
+def error():
+    print("ERROR")
+    sys.exit(-1)
 
 def add_indent(code):
+    if in_expr: return code[0]
     return "\n".join(map(lambda x: " "*indent*4 + x, code)) + "\n"
 
 def inc_indent():
@@ -36,9 +44,14 @@ def gen_compound_statement(tree):
     return code
 
 def gen_var_def(tree):
+    global in_expr
+
     name = tree.name
     t = tree.type
+    
+    in_expr = True
     expr = gen_python_code(tree.expr)
+    in_expr = False
 
     if tree.expr is None:
         if t == "integer":
@@ -49,14 +62,20 @@ def gen_var_def(tree):
     return add_indent([f"_se_var_def(\"{name}\", {type_class[t]}, {expr})"])
 
 def gen_assignment(tree):
+    global in_expr
     name = tree.name
     expr = tree.expr
 
+    in_expr = True
     expr = gen_python_code(expr)
+    in_expr = False
     
     return add_indent([f"_se_assignment(\"{name}\", {expr})"])
 
 def gen_func_def(tree):
+    global in_func
+    in_func = True
+
     name = tree.name
     args = tree.arg_names
     ret = tree.return_types
@@ -68,11 +87,16 @@ def gen_func_def(tree):
     code += st
     dec_indent()
 
-    code += add_indent([f"_se_functions[\"{name}\"] = [{name+'_'}, [{', '.join(map(lambda x:type_class[x[1]], args))}], [{', '.join(map(lambda x: type_class[x], ret))}]]"])
+    arg_list = f"""[{", ".join(map(lambda x: "('" + x[0] + "', " + type_class[x[1]] + " )", args))}]"""
+    code += add_indent([f"_se_functions[\"{name}\"] = [{name+'_'}, {arg_list}, [{', '.join(map(lambda x: type_class[x], ret))}]]"])
+
+    in_func = False
 
     return code
 
 def gen_return(tree):
+    if not in_func:
+        error()
     values = gen_python_code(tree.exprs)
 
     return add_indent([f"return [{values}]"])
@@ -84,6 +108,9 @@ def gen_call_func(tree):
     return add_indent([f"_se_call(\"{name}\", ({args}))"])
 
 def gen_infinit_loop(tree):
+    global in_loop 
+    in_loop = True
+
     code = add_indent(["_se_assignment(\"#counter\", _se_Integer(1))"])
     code += add_indent(["while True:"])
 
@@ -93,6 +120,7 @@ def gen_infinit_loop(tree):
     code += add_indent(["_se_assignment(\"#counter\", _se_add(_se_Ident(\"#counter\"), _se_Integer(1)))"])
     dec_indent()
 
+    in_loop = False
     return code
 
 #---
@@ -116,12 +144,17 @@ def gen_args(tree):
     return ", ".join(arg_list)
 
 def gen_expr(tree):
+    global in_expr
+
+    in_expr = True
+
     left = gen_python_code(tree.left)
     op = oper_f[tree.oper]
     right = gen_python_code(tree.right)
 
     vn = get_vn()
 
+    in_expr = False
     return f"{op}({left}, {right})"
 
 def gen_integer(tree):
