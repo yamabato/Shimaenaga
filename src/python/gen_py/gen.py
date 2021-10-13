@@ -63,12 +63,15 @@ def gen_call_func(tree):
     return add_indent([f"{name}({args})"])
 
 def gen_infinit_loop(tree):
-    code = add_indent(["while True:"])
+    code = add_indent(["_se_assignment(\"#counter\", _se_Integer(1))"])
+    code += add_indent(["while True:"])
 
     inc_indent()
     st = gen_python_code(tree.statements)
-    dec_indent()
     code += st
+    code += add_indent(["_se_assignment(\"#counter\", _se_add(_se_Ident(\"#counter\"), _se_Integer(1)))"])
+    dec_indent()
+
 
     return code
 

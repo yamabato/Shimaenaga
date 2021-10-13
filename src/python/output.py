@@ -69,10 +69,15 @@ def _se_print(*values):
     print()
 
 #---
-
 #name: [type, value]
 _se_environment = {}
+
+_se_var_def("#counter", _se_Integer, 0)
+
+
 _se_var_def("i", _se_Integer, _se_Integer(0))
+_se_assignment("#counter", _se_Integer(1))
 while True:
     _se_print(_se_Ident("i"))
     _se_assignment("i", _se_add(_se_Ident("i"), _se_Integer(1)))
+    _se_assignment("#counter", _se_add(_se_Ident("#counter"), _se_Integer(1)))

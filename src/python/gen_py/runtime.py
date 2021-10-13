@@ -69,6 +69,9 @@ def _se_print(*values):
     print()
 
 #---
-
 #name: [type, value]
 _se_environment = {}
+
+_se_var_def("#counter", _se_Integer, 0)
+
+
