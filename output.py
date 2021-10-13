@@ -1,6 +1,3 @@
-def putchar(n):
-    print(chr(n))
-
 #encoding: utf-8
 import sys
 

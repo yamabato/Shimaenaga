@@ -132,6 +132,7 @@ def gen_import(tree):
     global lib_code, libs
 
     prog_dir = os.path.dirname(__file__)
+    pwd = os.getcwd()
 
     names = tree.names
 
@@ -143,6 +144,20 @@ def gen_import(tree):
         if name == "PY":
             with open(prog_dir + "/libs/PY.py") as f:
                 lib_code += f.read() + "\n"
+
+        else:
+            fn = prog_dir + "/libs/" + name + ".se"
+            if not os.path.isfile(fn):
+                fn = pwd + name + ".se"
+
+                if not os.path.isfile(fn): continue
+
+            print(fn)
+            with open(fn, mode="r") as f:
+                print(f.read())
+                lib_code += gen_python_code(f.read()) + "\n"
+                print(lib_code)
+
     return ""
 
 #---

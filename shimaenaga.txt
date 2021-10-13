@@ -1,4 +1,5 @@
 Shimaenaga
+拡張子: .se
 親切なエラーメッセージ
 強い型付け
 静的型付け
@@ -165,6 +166,7 @@ import Library
 ShimaenagaまたはYokoshimaenagaで書く
 
 YSE(Yokoshimaenaga製 普通使わないよう,基本関数)
+PY(Python製 普通使わないよう,基本関数)
  putchar
 
 Math

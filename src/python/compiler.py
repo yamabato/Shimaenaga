@@ -7,11 +7,7 @@ from generator.gen_yse import generator
 from gen_py.gen import gen_executable_code
 
 code = """
-func f(a1: integer, a2: integer)(integer){
-    return a1 + a2
-}
-
-i: integer <- f(1, 2)
+import PY
 """
 
 tokens = lexer(code)
