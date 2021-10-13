@@ -12,6 +12,16 @@ indent = 0
 def add_indent(code):
     return "\n".join(map(lambda x: " "*indent*4 + x, code)) + "\n"
 
+def inc_indent():
+    global indent
+
+    indent += 1
+
+def dec_indent():
+    global indent
+
+    indent -= 1
+
 def get_vn():
     global value_n
     value_n += 1
@@ -52,6 +62,18 @@ def gen_call_func(tree):
 
     return add_indent([f"{name}({args})"])
 
+def gen_infinit_loop(tree):
+    code = add_indent(["while True:"])
+
+    inc_indent()
+    st = gen_python_code(tree.statements)
+    dec_indent()
+    code += st
+
+    return code
+
+#---
+
 def gen_exprs(tree):
     exprs = tree.exprs
     expr_list = []
@@ -69,7 +91,6 @@ def gen_args(tree):
         arg_list.append(gen_python_code(arg))
 
     return ", ".join(arg_list)
-
 
 def gen_expr(tree):
     left = gen_python_code(tree.left)
@@ -95,6 +116,8 @@ generator_f = {
     ASSIGNMENT: gen_assignment,
 
     CALL_FUNC: gen_call_func,
+
+    INFINIT_LOOP: gen_infinit_loop,
 
     EXPR: gen_expr,
     EXPRS: gen_exprs,

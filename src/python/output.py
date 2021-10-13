@@ -32,18 +32,22 @@ def _se_get_value(value):
 def _se_is_num(value):
     if isinstance(value, _se_Integer) or isinstance(value, _se_Float):
         return True
+    
+    if isinstance(value, _se_Ident) and _se_is_num(_se_environment[value.name][1]):
+        return True
+
     return False
 
 def _se_add(v1, v2):
     if _se_is_num(v1):
         if _se_is_num(v2):
-            return _se_Integer(v1.value + v2.value)
+            return _se_Integer(_se_get_value(v1) + _se_get_value(v2))
         _se_error()
 
 def _se_mul(v1, v2):
     if _se_is_num(v1):
         if _se_is_num(v2):
-            return _se_Integer(v1.value * v2.value)
+            return _se_Integer(_se_get_value(v1) * _se_get_value(v2))
         _se_error()
 
 def _se_var_def(name, t, value):
@@ -62,11 +66,13 @@ def _se_assignment(name, value):
 def _se_print(*values):
     for v in values:
         print(_se_get_value(v), end=" ")
+    print()
 
 #---
 
 #name: [type, value]
 _se_environment = {}
 _se_var_def("i", _se_Integer, _se_Integer(0))
-_se_assignment("i", _se_add(_se_Integer(10), _se_mul(_se_Integer(1), _se_Integer(2))))
-_se_print(_se_add(_se_mul(_se_Integer(10), _se_Integer(2)), _se_Integer(3)), _se_Integer(20), _se_Integer(30), _se_Ident("i"))
+while True:
+    _se_print(_se_Ident("i"))
+    _se_assignment("i", _se_add(_se_Ident("i"), _se_Integer(1)))

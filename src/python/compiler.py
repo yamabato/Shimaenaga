@@ -7,9 +7,11 @@ from generator.gen_yse import generator
 from gen_py.gen import gen_executable_code
 
 code = """
-i: integer
-i <- 10 + 1 * 2
-_se_print(10*2+3, 20, 30, i)
+i: integer <- 0
+loop {
+    _se_print(i)
+    i <- i + 1
+}
 """
 
 tokens = lexer(code)
