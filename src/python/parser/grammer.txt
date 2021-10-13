@@ -1,4 +1,0 @@
-expression: expr [(==, !=, <, >, <=, >=) expression]*
-expr: term [(+, -) term]*
-term: factor [(*, /, %, //) factor]*
-factor: num, ident, "(" expr ")"
