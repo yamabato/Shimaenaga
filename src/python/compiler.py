@@ -8,7 +8,8 @@ from gen_py.gen import gen_executable_code
 
 code = """
 i: integer
-i <- 10 + 1
+i <- 10 + 1 * 2
+_se_print(10*2+3, 20, 30, i)
 """
 
 tokens = lexer(code)

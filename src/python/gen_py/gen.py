@@ -47,7 +47,7 @@ def gen_assignment(tree):
     return add_indent([f"_se_assignment(\"{name}\", {expr})"])
 
 def gen_call_func(tree):
-    name = tree
+    name = tree.name
     args = gen_python_code(tree.args)
 
     return add_indent([f"{name}({args})"])
@@ -60,6 +60,16 @@ def gen_exprs(tree):
         expr_list.append(gen_python_code(expr))
 
     return ", ".join(expr_list)
+
+def gen_args(tree):
+    args = tree.args
+    arg_list = []
+
+    for arg in args:
+        arg_list.append(gen_python_code(arg))
+
+    return ", ".join(arg_list)
+
 
 def gen_expr(tree):
     left = gen_python_code(tree.left)
@@ -87,6 +97,8 @@ generator_f = {
     CALL_FUNC: gen_call_func,
 
     EXPR: gen_expr,
+    EXPRS: gen_exprs,
+    ARGS: gen_args,
     INTEGER: gen_integer,
     IDENT: gen_ident,
 }
