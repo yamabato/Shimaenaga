@@ -9,7 +9,23 @@ from gen_py.gen import gen_executable_code
 
 code = """
 import Io
+put(72)
+put(101)
+put(108)
+put(108)
+put(111)
+put(44)
+put(32)
+put(87)
+put(111)
+put(114)
+put(108)
+put(100)
+put(33)
+put(33)
+put(10)
 """
+
 
 added = True
 lib_name = []

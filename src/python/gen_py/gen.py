@@ -110,7 +110,7 @@ def gen_call_func(tree):
     name = tree.name
     args = gen_python_code(tree.args)
 
-    return add_indent([f"_se_call(\"{name}\", ({args}))"])
+    return add_indent([f"_se_call(\"{name}\", ({args}, ))"])
 
 def gen_infinit_loop(tree):
     global in_loop 
@@ -143,6 +143,7 @@ def gen_import(tree):
         if name == "PY":
             with open(prog_dir + "/libs/PY.py") as f:
                 lib_code += f.read() + "\n"
+
     return ""
 
 #---
@@ -163,7 +164,7 @@ def gen_args(tree):
     for arg in args:
         arg_list.append(gen_python_code(arg))
 
-    return ", ".join(arg_list)
+    return ", ".join(map(lambda x:f"({x})" ,arg_list))
 
 def gen_expr(tree):
     global in_expr
@@ -240,4 +241,4 @@ def gen_executable_code(tree):
     with open(os.path.dirname(__file__) + "/runtime.py", mode="r", encoding="utf-8") as f:
         runtime_lib = f.read()
 
-    return header + lib_code + runtime_lib + code
+    return header + runtime_lib + lib_code + "#---\n\n" + code

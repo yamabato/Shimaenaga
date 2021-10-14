@@ -24,6 +24,7 @@ def _se_get_value(value):
         return value.value
 
     if isinstance(value, _se_Ident):
+        return _se_environment[value.name][1]
         return _se_get_value(_se_environment[value.name][1])
 
 def _se_is_num(value):
@@ -67,32 +68,39 @@ def _se_call(name, args):
     f, arg_types, ret = _se_functions[name]
 
     if len(arg_types) != len(args): _se_error()
-    for arg, at in zip(args, arg_types):
+
+    args_ = []
+    for arg in args:
+        if isinstance(arg, _se_Ident):
+            args_.append(_se_get_value(arg))
+        else:
+            args_.append(arg)
+    
+    for arg, at in zip(args_, arg_types):
         if not isinstance(arg, at[1]): _se_error()
 
     env = _se_environment.copy()
 
-    for at, arg in zip(arg_types, args):
-        _se_var_def(*at, arg)
+    for at, arg in zip(arg_types, args_):
+        if at[0] not in _se_environment:
+            _se_var_def(*at, arg)
+        else:
+            _se_assignment(at[0], arg)
 
-    ret_value = f(*args)
+    ret_value = f(*map(lambda x: _se_get_value(x), args))
 
     if (0 if ret_value is None else len(ret_value)) != len(ret): _se_error()
 
-    for r, rt in zip(ret_value, ret):
-        if not isinstance(r, rt): _se_error()
+    if ret_value is not None:
+        for r, rt in zip(ret_value, ret):
+            if not isinstance(r, rt): _se_error()
 
-    if len(ret_value) == 1:
-        ret_value = ret_value[0]
+        if len(ret_value) == 1:
+            ret_value = ret_value[0]
 
     _se_environment = env
 
     return ret_value
-
-def _se_print(*values):
-    for v in values:
-        print(_se_get_value(v), end=" ")
-    print()
 
 #---
 
@@ -102,7 +110,7 @@ _se_environment = {}
 #name: [func, args, ret]
 _se_functions = {}
 
-_se_var_def("#counter", _se_Integer, 0)
+_se_var_def("#counter", _se_Integer, _se_Integer(0))
 
 #---
 

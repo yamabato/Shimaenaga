@@ -1,0 +1,5 @@
+import PY
+
+func put(n: integer)(){
+    _se_PY_putchar(n)
+}

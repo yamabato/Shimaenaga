@@ -8,7 +8,7 @@ def preprocessor(code, lib_name=[]):
 
     lines = code.split("\n")
 
-    prog_dir = os.path.dirname(__file__) + "/"
+    prog_dir = os.path.dirname(__file__) + "/../gen_py/"
     pwd = os.getcwd() + "/"
 
     if "^^" not in code:
