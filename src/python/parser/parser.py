@@ -627,6 +627,10 @@ class Parser:
             elif self.cur_token.value == "func" and self.peek_token.type == TYPE_IDENTIFIER:
                 st = self.parse_func_def()
 
+            elif self.cur_token.value == "^^":
+                self.next()
+                continue
+
             else:
                 print("!")
                 self.next()

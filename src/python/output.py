@@ -1,7 +1,5 @@
-def putchar(n):
-    print(chr(n))
-
 #encoding: utf-8
+
 import sys
 
 class _se_Integer:
@@ -112,3 +110,4 @@ _se_var_def("#counter", _se_Integer, 0)
 
 #---
 
+_se_var_def("i", _se_Integer, _se_Integer(10))

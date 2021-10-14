@@ -1,6 +1,3 @@
-#encoding: utf-8
-import sys
-
 class _se_Integer:
     def __init__(self, value):
         self.value = value

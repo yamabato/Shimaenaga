@@ -234,7 +234,10 @@ def gen_python_code(tree):
 def gen_executable_code(tree):
     code = gen_python_code(tree)
 
+    with open(os.path.dirname(__file__) + "/header.py", mode="r", encoding="utf-8") as f:
+        header = f.read()
+
     with open(os.path.dirname(__file__) + "/runtime.py", mode="r", encoding="utf-8") as f:
         runtime_lib = f.read()
 
-    return lib_code + runtime_lib + code
+    return header + lib_code + runtime_lib + code

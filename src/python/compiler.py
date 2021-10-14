@@ -1,5 +1,6 @@
 #encoding: utf-8
 
+from preprocessor.preprocessor import preprocessor
 from lexer.lexer import lexer
 from parser.parser import Parser
 from parser.pretty_print import pretty_print
@@ -7,8 +8,13 @@ from generator.gen_yse import generator
 from gen_py.gen import gen_executable_code
 
 code = """
-import PY
+import Io
 """
+
+added = True
+lib_name = []
+while added:
+    code, added, lib_name = preprocessor(code, lib_name)
 
 tokens = lexer(code)
 parser = Parser(tokens)
