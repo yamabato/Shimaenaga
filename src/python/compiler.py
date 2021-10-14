@@ -7,25 +7,22 @@ from parser.pretty_print import pretty_print
 from generator.gen_yse import generator
 from gen_py.gen import gen_executable_code
 
+import os
+import sys
+
 code = """
-import Io
-put(72)
-put(101)
-put(108)
-put(108)
-put(111)
-put(44)
-put(32)
-put(87)
-put(111)
-put(114)
-put(108)
-put(100)
-put(33)
-put(33)
-put(10)
 """
 
+fn = ""
+if len(sys.argv) == 2:
+    fn = sys.argv[1]
+
+    if os.path.isfile(fn) and fn[-3:] == ".se":
+        with open(fn, mode="r") as f:
+            code = f.read()
+
+    else:
+        fn = ""
 
 added = True
 lib_name = []
@@ -39,9 +36,11 @@ tree = parser.parse()
 #pretty_print(tree)
 
 python_code = gen_executable_code(tree)
-print(python_code)
+#print(python_code)
 
 file_name = "output.py"
+if fn != "":
+    file_name = "".join(fn.split(".")[:-1]) + ".py"
 with open(file_name, mode="w", encoding="utf-8") as f:
     f.write(python_code)
 

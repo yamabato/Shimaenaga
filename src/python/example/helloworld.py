@@ -118,5 +118,28 @@ _se_var_def("#counter", _se_Integer, _se_Integer(0))
 
 #---
 
+def _se_PY_putchar(n):
+    print(chr(_se_get_value(n)), end="")
+
+_se_functions["_se_PY_putchar"] = [_se_PY_putchar, [("n", _se_Integer)], []]
+
 #---
 
+def put_(n):
+    _se_call("_se_PY_putchar", ((_se_Ident("n")), ))
+_se_functions["put"] = [put_, [('n', _se_Integer )], []]
+_se_call("put", ((_se_Integer(72)), ))
+_se_call("put", ((_se_Integer(101)), ))
+_se_call("put", ((_se_Integer(108)), ))
+_se_call("put", ((_se_Integer(108)), ))
+_se_call("put", ((_se_Integer(111)), ))
+_se_call("put", ((_se_Integer(44)), ))
+_se_call("put", ((_se_Integer(32)), ))
+_se_call("put", ((_se_Integer(87)), ))
+_se_call("put", ((_se_Integer(111)), ))
+_se_call("put", ((_se_Integer(114)), ))
+_se_call("put", ((_se_Integer(108)), ))
+_se_call("put", ((_se_Integer(100)), ))
+_se_call("put", ((_se_Integer(33)), ))
+_se_call("put", ((_se_Integer(33)), ))
+_se_call("put", ((_se_Integer(10)), ))
