@@ -14,10 +14,6 @@ class _se_Ident:
     def __init__(self, name):
         self.name = name
 
-class _se_Bool:
-    def __init__(self, value):
-        self.value = value
-
 #---
 
 def _se_error():
@@ -48,51 +44,23 @@ def _se_add(v1, v2):
         if _se_is_num(v2):
             return _se_Integer(_se_get_value(v1) + _se_get_value(v2))
         _se_error()
+
 def _se_sub(v1, v2):
     if _se_is_num(v1):
         if _se_is_num(v2):
             return _se_Integer(_se_get_value(v1) - _se_get_value(v2))
         _se_error()
+
 def _se_mul(v1, v2):
     if _se_is_num(v1):
         if _se_is_num(v2):
             return _se_Integer(_se_get_value(v1) * _se_get_value(v2))
         _se_error()
+
 def _se_div(v1, v2):
     if _se_is_num(v1):
         if _se_is_num(v2):
             return _se_Float(_se_get_value(v1) / _se_get_value(v2))
-        _se_error()
-
-def _se_equ(v1, v2):
-    if _se_is_num(v1):  
-        if _se_is_num(v2):
-            return _se_Bool(v1 == v2)
-        _se_error()
-def _se_neq(v1, v2):
-    if _se_is_num(v1):  
-        if _se_is_num(v2):
-            return _se_Bool(v1 != v2)
-        _se_error()
-def _se_lss(v1, v2):
-    if _se_is_num(v1):  
-        if _se_is_num(v2):
-            return _se_Bool(v1 < v2)
-        _se_error()
-def _se_gtr(v1, v2):
-    if _se_is_num(v1):  
-        if _se_is_num(v2):
-            return _se_Bool(v1 > v2)
-        _se_error()
-def _se_geq(v1, v2):
-    if _se_is_num(v1):  
-        if _se_is_num(v2):
-            return _se_Bool(v1 >= v2)
-        _se_error()
-def _se_leq(v1, v2):
-    if _se_is_num(v1):  
-        if _se_is_num(v2):
-            return _se_Bool(v1 <= v2)
         _se_error()
 
 def _se_var_def(name, t, value):
@@ -163,6 +131,16 @@ _se_var_def("#counter", _se_Integer, _se_Integer(0))
 
 #---
 
+def _se_PY_putchar():
+    n = _se_get_value(_se_Ident("n"))
+    print(chr(n), end="")
+    sys.stdout.flush()
+
+_se_functions["_se_PY_putchar"] = [_se_PY_putchar, [("n", _se_Integer)], []]
+
 #---
 
-_se_var_def("b", _se_Bool, _se_equ(_se_Integer(1), _se_Integer(1)))
+def put_():
+    _se_call("_se_PY_putchar", ((_se_Ident("n")), ))
+_se_functions["put"] = [put_, [('n', _se_Integer )], []]
+_se_call("_se_PY_putchar", ((_se_sub(_se_add(_se_sub(_se_mul(_se_Integer(24), _se_Integer(2)), _se_Integer(2)), _se_Integer(20)), _se_Integer(5))), ))

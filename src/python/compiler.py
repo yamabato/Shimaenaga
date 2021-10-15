@@ -11,6 +11,7 @@ import os
 import sys
 
 code = """
+b: bool <- 1 == 1
 """
 
 fn = ""

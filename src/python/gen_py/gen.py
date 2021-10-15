@@ -85,7 +85,7 @@ def gen_func_def(tree):
     args = tree.arg_names
     ret = tree.return_types
 
-    code = add_indent([f"def {name}_({', '.join(map(lambda x: x[0], args))}):"])
+    code = add_indent([f"def {name}_():"])
     inc_indent()
     st = gen_python_code(tree.statements)
     if st == "": st = add_indent(["pass"])
@@ -123,6 +123,23 @@ def gen_infinit_loop(tree):
     st = gen_python_code(tree.statements)
     code += st
     code += add_indent(["_se_assignment(\"#counter\", _se_add(_se_Ident(\"#counter\"), _se_Integer(1)))"])
+    dec_indent()
+
+    in_loop = False
+    return code
+
+def gen_count_loop(tree):
+    global in_loop 
+    in_loop = True
+
+    code = add_indent(["_se_assignment(\"#counter\", _se_Integer(1))"])
+    code += add_indent(["while True:"])
+
+    inc_indent()
+    st = gen_python_code(tree.statements)
+    code += st
+    code += add_indent(["_se_assignment(\"#counter\", _se_add(_se_Ident(\"#counter\"), _se_Integer(1)))"])
+    #node.n < #count: break
     dec_indent()
 
     in_loop = False
@@ -205,6 +222,7 @@ generator_f = {
     IMPORT: gen_import,
 
     INFINIT_LOOP: gen_infinit_loop,
+    COUNT_LOOP: gen_count_loop,
 
     EXPR: gen_expr,
     EXPRS: gen_exprs,
@@ -216,12 +234,22 @@ generator_f = {
 
 oper_f = {
     "+": "_se_add",
+    "-": "_se_sub",
     "*": "_se_mul",
+    "/": "_se_div",
+
+    "==": "_se_equ", 
+    "!=": "_se_neq", 
+    "<": "_se_lss", 
+    ">": "_se_gtr", 
+    ">=": "_se_geq", 
+    "<=": "_se_leq", 
 }
 
 type_class = {
     "integer": "_se_Integer",
     "float": "_se_Float",
+    "bool": "_se_Bool",
 }
 
 def gen_python_code(tree):

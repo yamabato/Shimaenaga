@@ -1,0 +1,3 @@
+import Io
+
+_se_PY_putchar(24*2-2+20-5)

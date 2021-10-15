@@ -119,7 +119,8 @@ _se_var_def("#counter", _se_Integer, _se_Integer(0))
 #---
 
 def _se_PY_putchar(n):
-    print(chr(_se_get_value(n)), end="")
+    if isinstance(n, _se_Integer):
+        print(chr(_se_get_value(n)), end="")
 
 _se_functions["_se_PY_putchar"] = [_se_PY_putchar, [("n", _se_Integer)], []]
 

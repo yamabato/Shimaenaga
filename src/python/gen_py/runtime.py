@@ -10,6 +10,10 @@ class _se_Ident:
     def __init__(self, name):
         self.name = name
 
+class _se_Bool:
+    def __init__(self, value):
+        self.value = value
+
 #---
 
 def _se_error():
@@ -24,7 +28,6 @@ def _se_get_value(value):
         return value.value
 
     if isinstance(value, _se_Ident):
-        return _se_environment[value.name][1]
         return _se_get_value(_se_environment[value.name][1])
 
 def _se_is_num(value):
@@ -41,11 +44,51 @@ def _se_add(v1, v2):
         if _se_is_num(v2):
             return _se_Integer(_se_get_value(v1) + _se_get_value(v2))
         _se_error()
-
+def _se_sub(v1, v2):
+    if _se_is_num(v1):
+        if _se_is_num(v2):
+            return _se_Integer(_se_get_value(v1) - _se_get_value(v2))
+        _se_error()
 def _se_mul(v1, v2):
     if _se_is_num(v1):
         if _se_is_num(v2):
             return _se_Integer(_se_get_value(v1) * _se_get_value(v2))
+        _se_error()
+def _se_div(v1, v2):
+    if _se_is_num(v1):
+        if _se_is_num(v2):
+            return _se_Float(_se_get_value(v1) / _se_get_value(v2))
+        _se_error()
+
+def _se_equ(v1, v2):
+    if _se_is_num(v1):  
+        if _se_is_num(v2):
+            return _se_Bool(v1 == v2)
+        _se_error()
+def _se_neq(v1, v2):
+    if _se_is_num(v1):  
+        if _se_is_num(v2):
+            return _se_Bool(v1 != v2)
+        _se_error()
+def _se_lss(v1, v2):
+    if _se_is_num(v1):  
+        if _se_is_num(v2):
+            return _se_Bool(v1 < v2)
+        _se_error()
+def _se_gtr(v1, v2):
+    if _se_is_num(v1):  
+        if _se_is_num(v2):
+            return _se_Bool(v1 > v2)
+        _se_error()
+def _se_geq(v1, v2):
+    if _se_is_num(v1):  
+        if _se_is_num(v2):
+            return _se_Bool(v1 >= v2)
+        _se_error()
+def _se_leq(v1, v2):
+    if _se_is_num(v1):  
+        if _se_is_num(v2):
+            return _se_Bool(v1 <= v2)
         _se_error()
 
 def _se_var_def(name, t, value):
@@ -72,7 +115,8 @@ def _se_call(name, args):
     args_ = []
     for arg in args:
         if isinstance(arg, _se_Ident):
-            args_.append(_se_get_value(arg))
+            if arg.name not in _se_environment: _se_error()
+            args_.append(_se_environment[arg.name][1])
         else:
             args_.append(arg)
     
@@ -87,7 +131,8 @@ def _se_call(name, args):
         else:
             _se_assignment(at[0], arg)
 
-    ret_value = f(*map(lambda x: _se_get_value(x), args))
+    ret_value = f()
+    #ret_value = f(*map(lambda x: _se_get_value(x) if isinstance(x, _se_Ident) else x, args))
 
     if (0 if ret_value is None else len(ret_value)) != len(ret): _se_error()
 
