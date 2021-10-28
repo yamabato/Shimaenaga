@@ -41,7 +41,7 @@ SIGN_NAME = [
 ]
 
 KEYWORD = [
-    "#counter",
+    #"#counter",
 
     "loop",
     "if",

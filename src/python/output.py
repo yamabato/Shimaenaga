@@ -67,32 +67,32 @@ def _se_div(v1, v2):
 def _se_equ(v1, v2):
     if _se_is_num(v1):  
         if _se_is_num(v2):
-            return _se_Bool(v1 == v2)
+            return _se_Bool(_se_get_value(v1) == _se_get_value(v2))
         _se_error()
 def _se_neq(v1, v2):
     if _se_is_num(v1):  
         if _se_is_num(v2):
-            return _se_Bool(v1 != v2)
+            return _se_Bool(_se_get_value(v1) != _se_get_value(v2))
         _se_error()
 def _se_lss(v1, v2):
     if _se_is_num(v1):  
         if _se_is_num(v2):
-            return _se_Bool(v1 < v2)
+            return _se_Bool(_se_get_value(v1) < _se_get_value(v2))
         _se_error()
 def _se_gtr(v1, v2):
     if _se_is_num(v1):  
         if _se_is_num(v2):
-            return _se_Bool(v1 > v2)
+            return _se_Bool(_se_get_value(v1) > _se_get_value(v2))
         _se_error()
 def _se_geq(v1, v2):
     if _se_is_num(v1):  
         if _se_is_num(v2):
-            return _se_Bool(v1 >= v2)
+            return _se_Bool(_se_get_value(v1) >= _se_get_value(v2))
         _se_error()
 def _se_leq(v1, v2):
     if _se_is_num(v1):  
         if _se_is_num(v2):
-            return _se_Bool(v1 <= v2)
+            return _se_Bool(_se_get_value(v1) <= _se_get_value(v2))
         _se_error()
 
 def _se_var_def(name, t, value):
@@ -163,6 +163,22 @@ _se_var_def("#counter", _se_Integer, _se_Integer(0))
 
 #---
 
+def _se_PY_putchar():
+    n = _se_get_value(_se_Ident("n"))
+    print(chr(n), end="")
+    sys.stdout.flush()
+
+_se_functions["_se_PY_putchar"] = [_se_PY_putchar, [("n", _se_Integer)], []]
+
 #---
 
-_se_var_def("b", _se_Bool, _se_equ(_se_Integer(1), _se_Integer(1)))
+def put_():
+    _se_call("_se_PY_putchar", ((_se_Ident("n")), ))
+_se_functions["put"] = [put_, [('n', _se_Integer )], []]
+_se_assignment("#counter", _se_Integer(1))
+while True:
+    _se_call("put", ((_se_Ident("#counter")), ))
+    _se_assignment("#counter", _se_add(_se_Ident("#counter"), _se_Integer(1)))
+    if _se_lss(_se_Integer(10), _se_Ident("#counter")):
+        break
+_se_call("put", ((_se_Ident("#counter")), ))

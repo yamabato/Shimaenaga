@@ -138,8 +138,13 @@ def gen_count_loop(tree):
     inc_indent()
     st = gen_python_code(tree.statements)
     code += st
+    n = gen_python_code(tree.n)
     code += add_indent(["_se_assignment(\"#counter\", _se_add(_se_Ident(\"#counter\"), _se_Integer(1)))"])
     #node.n < #count: break
+    code += add_indent([f"if _se_lss({n}, _se_Ident(\"#counter\")):"])
+    inc_indent()
+    code += add_indent(["break"])
+    dec_indent()
     dec_indent()
 
     in_loop = False

@@ -11,7 +11,11 @@ import os
 import sys
 
 code = """
-b: bool <- 1 == 1
+import Io
+loop 10{
+    put(#counter)
+}
+put(#counter)
 """
 
 fn = ""

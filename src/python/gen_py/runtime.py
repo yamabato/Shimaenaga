@@ -63,32 +63,32 @@ def _se_div(v1, v2):
 def _se_equ(v1, v2):
     if _se_is_num(v1):  
         if _se_is_num(v2):
-            return _se_Bool(v1 == v2)
+            return _se_Bool(_se_get_value(v1) == _se_get_value(v2))
         _se_error()
 def _se_neq(v1, v2):
     if _se_is_num(v1):  
         if _se_is_num(v2):
-            return _se_Bool(v1 != v2)
+            return _se_Bool(_se_get_value(v1) != _se_get_value(v2))
         _se_error()
 def _se_lss(v1, v2):
     if _se_is_num(v1):  
         if _se_is_num(v2):
-            return _se_Bool(v1 < v2)
+            return _se_Bool(_se_get_value(v1) < _se_get_value(v2))
         _se_error()
 def _se_gtr(v1, v2):
     if _se_is_num(v1):  
         if _se_is_num(v2):
-            return _se_Bool(v1 > v2)
+            return _se_Bool(_se_get_value(v1) > _se_get_value(v2))
         _se_error()
 def _se_geq(v1, v2):
     if _se_is_num(v1):  
         if _se_is_num(v2):
-            return _se_Bool(v1 >= v2)
+            return _se_Bool(_se_get_value(v1) >= _se_get_value(v2))
         _se_error()
 def _se_leq(v1, v2):
     if _se_is_num(v1):  
         if _se_is_num(v2):
-            return _se_Bool(v1 <= v2)
+            return _se_Bool(_se_get_value(v1) <= _se_get_value(v2))
         _se_error()
 
 def _se_var_def(name, t, value):
